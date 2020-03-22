@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-GeoId", help="Country or region id", default ="ZA", type=str)
 parser.add_argument("-filename", help="Raw Data File", \
 default ="data/COVID-19-geographic-disbtribution-worldwide-2020-03-21.xlsx", type=str)
+parser.add_argument("-save", help="Save Image as output.png", default =False, type=bool)
 
 
 LOGGER = logging.getLogger(__name__)
@@ -32,7 +33,7 @@ def get_country(df):
     return df["Countries and territories"].unique()[0]
 
 
-def run(GeoId , filename):
+def run(GeoId , filename, save_image):
     # GeoId = "DZ"
     df_raw =  import_data(filename)
 
@@ -58,7 +59,10 @@ def run(GeoId , filename):
     df.plot(x="DateRep", y=["Total_Cases"], style='.', ax=axes[1], title =f"Total_Cases in {country_name}", legend=False)
     df.plot(x="DateRep", y=["Total_Cases"], ax=axes[1], legend=False)
 
-    plt.show()
+    # plt.show()
+
+    if save_image is True:
+        fig.savefig('images/output.png')
 
 
 
@@ -66,7 +70,7 @@ if __name__ == "__main__":
     try:
         args = parser.parse_args()
         LOGGER.info(f"Corona Plotting with GeoId = {args.GeoId}: Starting...")
-        run(GeoId = args.GeoId, filename = args.filename)
+        run(GeoId = args.GeoId, filename = args.filename, save_image = args.save)
         LOGGER.info("Corona Plotting: Finished")
     except Exception as exc:
         LOGGER.exception(f"Corona Plotting failed, {exc}")
