@@ -1,0 +1,20 @@
+#Installing
+
+1. Create a Python virtual environment and activate it.
+
+  i. If you do not have virtualenv install it
+      pip3 install virtualenv
+
+  ii. Initialise your virtual environment
+    virtualenv -p python3 venv
+    source venv/bin/activate
+
+
+2. Install the package and all of its requirements.
+    pip install -e .
+
+
+
+#Plotting Country Data
+
+  i. Run Script script/plot_data.py using country code.
