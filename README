@@ -24,3 +24,7 @@
 #Plotting Country Data
 
   i. Run Script script/plot_data.py using country code.
+  
+#Plotting All Country Case Data on a Log-Log plot
+
+  i. Run Script script/log_plotting.py.
