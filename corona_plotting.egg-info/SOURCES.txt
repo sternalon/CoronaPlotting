@@ -1,7 +1,0 @@
-README
-corona_plotting.egg-info/PKG-INFO
-corona_plotting.egg-info/SOURCES.txt
-corona_plotting.egg-info/dependency_links.txt
-corona_plotting.egg-info/not-zip-safe
-corona_plotting.egg-info/requires.txt
-corona_plotting.egg-info/top_level.txt
