@@ -8,9 +8,9 @@ import argparse
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-GeoId", help="Country or region id", default ="ZA", type=str)
+parser.add_argument("-geoId", help="Country or region id", default ="ZA", type=str)
 parser.add_argument("-filename", help="Raw Data File", \
-default ="data/COVID-19-geographic-disbtribution-worldwide-2020-03-21.xlsx", type=str)
+default ="data/COVID-19-geographic-disbtribution-worldwide-2020-03-27.xlsx", type=str)
 parser.add_argument("-save", help="Save Image as output.png", default =False, type=bool)
 
 
@@ -21,25 +21,25 @@ def import_data(filename = None):
     df = pd.read_excel (filename)
     return df
 
-def filter_by_country(df, GeoId):
-    df_filter = df.loc[df['GeoId'] == GeoId]
+def filter_by_country(df, geoId):
+    df_filter = df.loc[df['geoId'] == geoId]
     return df_filter
 
 def sort_by_date(df):
-    df_sorted = df.sort_values(by = "DateRep", ascending=True)
+    df_sorted = df.sort_values(by = "dateRep", ascending=True)
     return df_sorted
 
 def get_country(df):
-    return df["Countries and territories"].unique()[0]
+    return df["countriesAndTerritories"].unique()[0]
 
 
-def run(GeoId , filename, save_image):
-    # GeoId = "DZ"
+def run(geoId , filename, save_image):
+    # geoId = "DZ"
     df_raw =  import_data(filename)
 
-    df = filter_by_country(df_raw, GeoId =GeoId)
+    df = filter_by_country(df_raw, geoId =geoId)
     df = sort_by_date(df)
-    df['Total_Cases'] = df["Cases"].cumsum()
+    df['total_cases'] = df["cases"].cumsum()
     country_name = get_country(df)
 
 
@@ -47,8 +47,8 @@ def run(GeoId , filename, save_image):
 
 
     #Figure 1
-    df.plot.bar(x="DateRep", y=["Cases"], color='b',  ax=axes[0], title =f"New Cases in {country_name}", legend=False)
-    df.plot(x="DateRep", y=["Cases"], color='b',  style='.', ax=axes[0], title =f"New Cases in {country_name}", legend=False)
+    df.plot.bar(x="dateRep", y=["cases"], color='b',  ax=axes[0], title =f"New Cases in {country_name}", legend=False)
+    df.plot(x="dateRep", y=["cases"], color='b',  style='.', ax=axes[0], title =f"New Cases in {country_name}", legend=False)
 
 
     # date_form = DateFormatter("%m-%d")
@@ -56,21 +56,21 @@ def run(GeoId , filename, save_image):
 
 
     #Figure 2
-    df.plot(x="DateRep", y=["Total_Cases"], style='.', ax=axes[1], title =f"Total_Cases in {country_name}", legend=False)
-    df.plot(x="DateRep", y=["Total_Cases"], ax=axes[1], legend=False)
-
-    # plt.show()
+    df.plot(x="dateRep", y=["total_cases"], style='.', ax=axes[1], title =f"Total_Cases in {country_name}", legend=False)
+    df.plot(x="dateRep", y=["total_cases"], ax=axes[1], legend=False)
 
     if save_image is True:
-        fig.savefig('images/output.png')
+        fig.savefig('images/number_of_cases.png')
+
+    plt.show()
 
 
 
 if __name__ == "__main__":
     try:
         args = parser.parse_args()
-        LOGGER.info(f"Corona Plotting with GeoId = {args.GeoId}: Starting...")
-        run(GeoId = args.GeoId, filename = args.filename, save_image = args.save)
+        LOGGER.info(f"Corona Plotting with geoId = {args.geoId}: Starting...")
+        run(geoId = args.geoId, filename = args.filename, save_image = args.save)
         LOGGER.info("Corona Plotting: Finished")
     except Exception as exc:
         LOGGER.exception(f"Corona Plotting failed, {exc}")
