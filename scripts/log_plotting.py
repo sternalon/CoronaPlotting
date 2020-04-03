@@ -9,8 +9,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-geoId", help="Country or region id", default ="ZA", type=str)
-parser.add_argument("-filename", help="Raw Data File", \
-default ="data/COVID-19-geographic-disbtribution-worldwide-2020-03-27.xlsx", type=str)
+parser.add_argument("-filename", help="Raw Data File", default ="data/latest.xlsx", type=str)
 parser.add_argument("-save", help="Save Image as output.png", default =False, type=bool)
 
 
