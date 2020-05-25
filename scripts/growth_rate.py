@@ -31,6 +31,10 @@ def sort_by_date(df):
 def get_country(df):
     return df["countriesAndTerritories"].unique()[0]
 
+def filter_by_min_total_cases(df, number):
+    df_filter = df.loc[df['total_cases']>number]
+    return df_filter
+
 
 def run(geoId , filename, save_image):
     # Import Data
@@ -40,29 +44,36 @@ def run(geoId , filename, save_image):
     geoId_list = ["US", "IT", "CN", "ES", "DE", "BR", "RU", "UK", "KR", "ZA"]
 
     df = filter_by_countries(df_raw, geoId_list =geoId_list)
+
     df = sort_by_date(df)
 
     # Calcualting Cumulative Sum of cases
-    df['total_cases'] = df.groupby(['geoId'])['cases'].cumsum() 
+    df['total_cases'] = df.groupby(['geoId'])['cases'].cumsum()
+    df = filter_by_min_total_cases(df, 100)
 
     # Calcualting Rollowing average for new cases
     window_size = 7
     df['av_cases'] = df.groupby('geoId')['cases'].transform(lambda x: x.rolling(window_size, 1).mean())
 
+    df['growth'] = df['cases']/df['total_cases']
+    df['av_growth'] = df.groupby('geoId')['growth'].transform(lambda x: x.rolling(window_size, 1).mean())
+
+
     #Plotting Data
     fig, ax = plt.subplots(figsize=(15,6))
     for key, grp in df.groupby(['geoId']):
-        ax = grp.plot(ax=ax, kind='line', x='total_cases', y='av_cases', label=get_country(grp))
+        ax = grp.plot(ax=ax, kind='line', x='dateRep', y='av_growth', label=get_country(grp))
     plt.legend(loc='best')
-    plt.xscale('log')
-    plt.yscale('log')
-    plt.title("New Cases vs Total Cases")
-    plt.xlim((80, 10**6))
-    plt.xlabel("Total Number cases")
-    plt.ylabel("New cases (7 day ave)")
+    # plt.xscale('log')
+    #plt.yscale('log')
+    plt.title("Daily Growth Rate (New Cases / Total Cases)")
+    plt.ylim((0, 0.4))
+    # plt.xlim((80, 10**6))
+    plt.xlabel("Date")
+    plt.ylabel("Daily Growth")
 
     if save_image is True:
-        fig.savefig('images/flatten_cases_plot.png')
+        fig.savefig('images/growth_plot.png')
 
     plt.show()
 
@@ -70,9 +81,9 @@ def run(geoId , filename, save_image):
 if __name__ == "__main__":
     try:
         args = parser.parse_args()
-        LOGGER.info(f"Flatten Curve Plotting: Starting...")
+        LOGGER.info(f"Growth Plotting: Starting...")
         run(geoId = args.geoId, filename = args.filename, save_image = args.save)
-        LOGGER.info("Flatten Curve Plotting: Finished")
+        LOGGER.info("Growth Plotting: Finished")
     except Exception as exc:
         LOGGER.exception(f"Flatten Curve Plotting failed, {exc}")
         raise exc

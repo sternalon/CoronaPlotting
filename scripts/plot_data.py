@@ -47,7 +47,7 @@ def run(geoId , filename, save_image):
 
     #Figure 1
     df.plot.bar(x="dateRep", y=["cases"], color='b',  ax=axes[0], title =f"New Cases in {country_name}", legend=False)
-    df.plot(x="dateRep", y=["cases"], color='b',  style='.', ax=axes[0], title =f"New Cases in {country_name}", legend=False)
+    # df.plot(x="dateRep", y=["cases"], color='b',  style='.', ax=axes[0], title =f"New Cases in {country_name}", legend=False)
 
 
     # date_form = DateFormatter("%m-%d")
